@@ -1,8 +1,15 @@
-from PacketSniffer import PacketSniffer
 from os import system
-from easygui import msgbox
 from sys import exit
 
+from easygui import msgbox
+
+from PacketSniffer import PacketSniffer
+
+
+def bgp_block():
+    msgbox('BGP Packet Detected.  Closing BGP port...', 'BGP Port is Open')
+    system('sudo iptables -A INPUT -s 0.0.0.0 --dport 179 -j DROP')
+    system('sudo iptables save')
 
 def main():
     print('Welcome to the BGP Detection Program!\nWARNING: If you want BGP enabled, don\'t use this program! ')
@@ -16,9 +23,7 @@ def main():
         sniffer = PacketSniffer('192.168.1.7')
         sniffer.run()
         if sniffer.get_bgp_dst():
-            msgbox('BGP Packet Detected.  Closing BGP port...', 'BGP Port is Open')
-            system('sudo iptables -A INPUT -s 0.0.0.0 --dport 179 -j DROP')
-            system('sudo iptables save')
+            bgp_block()
 
 
 if __name__ == '__main__':
