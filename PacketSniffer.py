@@ -8,7 +8,7 @@ import ctypes
 import winsound
 from os import name
 from socket import IPPROTO_IP, SOCK_RAW, RCVALL_ON, SIO_RCVALL, IPPROTO_ICMP, RCVALL_OFF, socket, AF_INET, IP_HDRINCL
-
+import socket
 from easygui import msgbox
 
 from IP import IP

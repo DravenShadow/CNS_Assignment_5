@@ -1,8 +1,6 @@
-from os import system
 from sys import exit
-
+import iptc
 from easygui import msgbox
-
 from PacketSniffer import PacketSniffer
 
 '''
@@ -18,8 +16,14 @@ def bgp_block():
     :return:
     """
     msgbox('BGP Packet Detected.  Closing BGP port...', 'BGP Port is Open')
-    system('sudo iptables -A INPUT -s 0.0.0.0 --dport 179 -j DROP')
-    system('sudo iptables save')
+    rule = iptc.Rule()
+    rule.protocol = 'tcp'
+    match = rule.create_match('tcp')
+    match.dport = '179'
+    target = iptc.Target(rule, "DROP")
+    rule.target = target
+    chain = iptc.Chain(iptc.Table(iptc.Table.FILTER), "INPUT")
+    chain.insert_rule(rule)
 
 def main():
     """
