@@ -5,10 +5,9 @@
     by Justin Seitiz.
 """
 import ctypes
-import winsound
-from os import name
-from socket import IPPROTO_IP, SOCK_RAW, RCVALL_ON, SIO_RCVALL, IPPROTO_ICMP, RCVALL_OFF, socket, AF_INET, IP_HDRINCL
-import socket
+import os
+from socket import IPPROTO_IP, SOCK_RAW, IPPROTO_ICMP, socket, AF_INET, IP_HDRINCL
+
 from easygui import msgbox
 
 from IP import IP
@@ -29,9 +28,6 @@ class PacketSniffer:
         :return:
         """
         if port_num == 179:
-            freq = 2500
-            dur = 1000
-            winsound.Beep(freq, dur)
             msgbox("Incoming Packet on Port %s \nBGP Packet...." % port_num,
                    "Unauthorized BGP Packet")
             return True
@@ -43,7 +39,7 @@ class PacketSniffer:
         Main part of the program.  This is where it reads in and decodes all packet traffic
         :return:
         """
-        if name == "nt":
+        if os.name == "nt":
             socket_protocol = IPPROTO_IP
         else:
             socket_protocol = IPPROTO_ICMP
@@ -54,8 +50,6 @@ class PacketSniffer:
 
         sniffer.setsockopt(IPPROTO_IP, IP_HDRINCL, 1)
 
-        if name == "nt":
-            sniffer.ioctl(SIO_RCVALL, RCVALL_ON)
         try:
             while True:
                 raw_buffer = sniffer.recvfrom(65565)[0]
@@ -76,5 +70,4 @@ class PacketSniffer:
 
                     print("TCP -> Source Port: %d Dest Port: %d" % (tcp_header.srcport, tcp_header.dstport))
         except KeyboardInterrupt:
-            if name == "nt":
-                sniffer.ioctl(SIO_RCVALL, RCVALL_OFF)
+            exit()

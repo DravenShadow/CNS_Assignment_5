@@ -1,8 +1,9 @@
 import os
-from os import system
-from easygui import msgbox
-from PacketSniffer import PacketSniffer
+
 import iptc
+from easygui import msgbox
+
+from PacketSniffer import PacketSniffer
 
 """
         FakeBGPPacket.py                                    Author: Rowland DePree
@@ -32,7 +33,7 @@ def main():
     This is the main method
     :return:
     """
-    if os.name() is 'Linux':
+    if os.name is 'posix':
         sniffer = PacketSniffer('192.168.1.7')
         sniffer.unencrypted_comm(179)
         bgp_block()
